@@ -1,0 +1,71 @@
+/**
+ * Admin Styles for Olku Payment OS
+ *
+ * @package OlkuPaymentOS
+ * @since 1.0.0
+ */
+
+.olku-payment-os-settings {
+    padding: 20px;
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    margin-top: 20px;
+}
+
+.olku-payment-os-settings h2 {
+    margin-top: 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.olku-webhook-url {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 4px;
+    margin: 15px 0;
+}
+
+.olku-webhook-url code {
+    display: block;
+    background: #fff;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    word-break: break-all;
+    font-size: 13px;
+}
+
+.olku-payment-status {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.olku-payment-status.success {
+    background: #d4edda;
+    color: #155724;
+}
+
+.olku-payment-status.pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.olku-payment-status.failed {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.olku-gateway-info {
+    background: #e7f3ff;
+    border-left: 4px solid #2271b1;
+    padding: 12px;
+    margin: 15px 0;
+}
+
+.olku-gateway-info p {
+    margin: 0;
+}

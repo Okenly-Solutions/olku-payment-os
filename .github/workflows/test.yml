@@ -1,0 +1,44 @@
+name: Test Build
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  test-build:
+    name: Test Plugin Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Test build script
+        run: |
+          chmod +x build.sh
+          ./build.sh test
+
+      - name: Verify ZIP contents
+        run: |
+          echo "Checking ZIP file structure..."
+          unzip -l releases/olku-payment-os-test.zip
+
+          echo -e "\nVerifying required files..."
+          unzip -l releases/olku-payment-os-test.zip | grep -q "olku-payment-os.php" && echo "✓ Main plugin file found"
+          unzip -l releases/olku-payment-os-test.zip | grep -q "README.md" && echo "✓ README found"
+          unzip -l releases/olku-payment-os-test.zip | grep -q "LICENSE" && echo "✓ LICENSE found"
+
+          echo -e "\nBuild test successful!"
+
+      - name: Upload test artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-build
+          path: releases/olku-payment-os-test.zip
+          retention-days: 7

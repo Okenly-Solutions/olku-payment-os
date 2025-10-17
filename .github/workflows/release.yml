@@ -1,0 +1,74 @@
+name: Create Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  build-and-release:
+    name: Build and Create Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Extract version from tag
+        id: get_version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: Build plugin ZIP
+        run: |
+          chmod +x build.sh
+          ./build.sh ${{ steps.get_version.outputs.VERSION }}
+
+      - name: Generate release notes
+        id: release_notes
+        run: |
+          cat > release_notes.md << 'EOF'
+          # 🎉 Olku Payment OS v${{ steps.get_version.outputs.VERSION }}
+
+          ## 📦 Installation
+
+          1. Download `olku-payment-os-${{ steps.get_version.outputs.VERSION }}.zip` below
+          2. WordPress Admin → Plugins → Add New → Upload Plugin
+          3. Upload and activate
+          4. Configure in WooCommerce → Settings → Payments
+
+          ## 📖 Documentation
+
+          - 📘 [Complete Documentation](https://github.com/${{ github.repository }})
+          - 🚀 [Quick Start Guide](QUICK_START.md)
+          - 🔧 [Installation Guide](INSTALLATION.md)
+          - 👨‍💻 [Developer Guide](EXTENDING.md)
+
+          ## 📝 Changelog
+
+          EOF
+
+          # Append relevant changelog section
+          sed -n '/## \['${{ steps.get_version.outputs.VERSION }}'\]/,/## \[/p' CHANGELOG.md | sed '$d' >> release_notes.md
+
+          echo "" >> release_notes.md
+          echo "---" >> release_notes.md
+          echo "" >> release_notes.md
+          echo "**Full Changelog**: https://github.com/${{ github.repository }}/compare/v$(git describe --tags --abbrev=0 HEAD^)...v${{ steps.get_version.outputs.VERSION }}" >> release_notes.md
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: Olku Payment OS v${{ steps.get_version.outputs.VERSION }}
+          body_path: release_notes.md
+          files: releases/olku-payment-os-${{ steps.get_version.outputs.VERSION }}.zip
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload ZIP as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: olku-payment-os-${{ steps.get_version.outputs.VERSION }}
+          path: releases/olku-payment-os-${{ steps.get_version.outputs.VERSION }}.zip
+          retention-days: 90
