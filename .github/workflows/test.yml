@@ -37,7 +37,7 @@ jobs:
           echo -e "\nBuild test successful!"
 
       - name: Upload test artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: test-build
           path: releases/olku-payment-os-test.zip
